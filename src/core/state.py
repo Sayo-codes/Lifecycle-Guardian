@@ -51,16 +51,16 @@ class AgentResult(BaseModel):
 
     @property
     def status_icon(self) -> str:
-        """Emoji icon for Markdown reports."""
+        """Indicator for Markdown reports and logs."""
         return {
-            AgentStatus.PASSED: "✅",
-            AgentStatus.WARNING: "⚠️",
-            AgentStatus.BLOCKED: "🛑",
-            AgentStatus.FAILED: "❌",
-            AgentStatus.SKIPPED: "⏭️",
-            AgentStatus.PENDING: "⏳",
-            AgentStatus.RUNNING: "🔄",
-        }.get(self.status, "❓")
+            AgentStatus.PASSED: "[PASSED]",
+            AgentStatus.WARNING: "[WARNING]",
+            AgentStatus.BLOCKED: "[BLOCKED]",
+            AgentStatus.FAILED: "[FAILED]",
+            AgentStatus.SKIPPED: "[SKIPPED]",
+            AgentStatus.PENDING: "[PENDING]",
+            AgentStatus.RUNNING: "[RUNNING]",
+        }.get(self.status, "[UNKNOWN]")
 
 
 class LifecycleContext(BaseModel):

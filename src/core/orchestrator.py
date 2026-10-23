@@ -229,21 +229,21 @@ class LifecycleOrchestrator:
             PipelineStatus.PASSED:  (
                 "```\n"
                 "╔══════════════════════════════════════════════════╗\n"
-                "║   ✅  LIFECYCLE GUARDIAN — PIPELINE PASSED       ║\n"
+                "║       LIFECYCLE GUARDIAN — PIPELINE PASSED       ║\n"
                 "╚══════════════════════════════════════════════════╝\n"
                 "```"
             ),
             PipelineStatus.BLOCKED: (
                 "```\n"
                 "╔══════════════════════════════════════════════════╗\n"
-                "║   🛑  LIFECYCLE GUARDIAN — PIPELINE BLOCKED      ║\n"
+                "║       LIFECYCLE GUARDIAN — PIPELINE BLOCKED      ║\n"
                 "╚══════════════════════════════════════════════════╝\n"
                 "```"
             ),
             PipelineStatus.PARTIAL: (
                 "```\n"
                 "╔══════════════════════════════════════════════════╗\n"
-                "║   ⚠️  LIFECYCLE GUARDIAN — PIPELINE PARTIAL      ║\n"
+                "║       LIFECYCLE GUARDIAN — PIPELINE PARTIAL      ║\n"
                 "╚══════════════════════════════════════════════════╝\n"
                 "```"
             ),
@@ -278,7 +278,7 @@ class LifecycleOrchestrator:
         # HEADER
         # ════════════════════════════════════════════════
         lines += [
-            "# 🛡️ Lifecycle Guardian — Post-Merge DevSecOps Report",
+            "# Lifecycle Guardian — Post-Merge DevSecOps Report",
             "",
             banner,
             "",
@@ -290,7 +290,7 @@ class LifecycleOrchestrator:
         # ════════════════════════════════════════════════
         lines += [
             "",
-            "## 📋 Run Metadata",
+            "## Run Metadata",
             "",
             "| Field | Value |",
             "| :--- | :--- |",
@@ -303,7 +303,7 @@ class LifecycleOrchestrator:
             f"| **Commit SHA** | `{context.merge_commit_sha or 'HEAD'}` |",
             f"| **Completed** | {completed_str} |",
             f"| **Pipeline Duration** | {context.total_duration_seconds}s |",
-            f"| **Overall Status** | {context.get_result(LifecycleStage.SECURE).status_icon if context.get_result(LifecycleStage.SECURE) else '❓'} **{status.value}** |",
+            f"| **Overall Status** | **{status.value}** |",
             "",
             "---",
         ]
@@ -313,7 +313,7 @@ class LifecycleOrchestrator:
         # ════════════════════════════════════════════════
         lines += [
             "",
-            "## 🧭 Executive Summary",
+            "## Executive Summary",
             "",
             f"> {exec_summary}",
             "",
@@ -325,7 +325,7 @@ class LifecycleOrchestrator:
         # ════════════════════════════════════════════════
         lines += [
             "",
-            "## 🚦 Pipeline Scorecard",
+            "## Pipeline Scorecard",
             "",
             "| | Stage | Agent | Status | Duration |",
             "| :---: | :--- | :--- | :---: | ---: |",
@@ -335,7 +335,7 @@ class LifecycleOrchestrator:
 
         # Quick legend
         lines += [
-            "> ✅ Passed · ⚠️ Warning · 🛑 Blocked · ❌ Failed · ⏭️ Skipped",
+            "> [PASSED] Passed · [WARNING] Warning · [BLOCKED] Blocked · [FAILED] Failed · [SKIPPED] Skipped",
             "",
             "---",
         ]
@@ -345,22 +345,13 @@ class LifecycleOrchestrator:
         # ════════════════════════════════════════════════
         lines += [
             "",
-            "## 🔍 Stage-by-Stage Findings",
+            "## Stage-by-Stage Findings",
         ]
 
-        stage_icons = {
-            LifecycleStage.SECURE:  "🔒",
-            LifecycleStage.VERIFY:  "🧪",
-            LifecycleStage.RELEASE: "🚀",
-            LifecycleStage.MONITOR: "📈",
-            LifecycleStage.GOVERN:  "🏛️",
-        }
-
         for i, res in enumerate(context.results, start=1):
-            s_icon = stage_icons.get(res.stage, "•")
             lines += [
                 "",
-                f"### {s_icon} Stage {i}: {res.stage.value}",
+                f"### Stage {i}: {res.stage.value}",
                 "",
                 f"**Agent**: `{res.agent_name}`  |  "
                 f"**Status**: {res.status_icon} `{res.status.value.upper()}`  |  "
@@ -375,7 +366,7 @@ class LifecycleOrchestrator:
             if res.stage == LifecycleStage.SECURE and res.details:
                 d = res.details
                 fsum = d.get("findings_summary", {})
-                gate = "PASS ✅" if d.get("decision") == "pass" else "BLOCK 🛑"
+                gate = "PASS" if d.get("decision") == "pass" else "BLOCK"
                 lines += [
                     "**Security Analysis:**",
                     "",
@@ -393,13 +384,13 @@ class LifecycleOrchestrator:
                 # List critical issues
                 critical = d.get("critical_issues", [])
                 if critical:
-                    lines += ["**⚠️ Critical Issues Requiring Triage:**", ""]
+                    lines += ["**Critical Issues Requiring Triage:**", ""]
                     for issue in critical:
                         lines.append(
                             f"- **[{issue.get('severity')}] {issue.get('id')}** — "
                             f"{issue.get('title')}  \n"
-                            f"  📍 `{issue.get('location')}` (CVSS: {issue.get('cvss_score')})  \n"
-                            f"  💊 *Fix*: {issue.get('remediation')}"
+                            f"  Location: `{issue.get('location')}` (CVSS: {issue.get('cvss_score')})  \n"
+                            f"  Fix: {issue.get('remediation')}"
                         )
                     lines.append("")
 
@@ -428,7 +419,7 @@ class LifecycleOrchestrator:
                     "",
                     f"**Code Coverage**: `{cov.get('coverage_percent', 'N/A')}%` ({delta_str})  "
                     f"**Threshold**: `{cov.get('threshold_percent', 85)}%`  "
-                    f"{'✅ Met' if cov.get('meets_threshold') else '❌ Below threshold'}",
+                    f"{'Met' if cov.get('meets_threshold') else 'Below threshold'}",
                     "",
                 ]
 
@@ -443,7 +434,7 @@ class LifecycleOrchestrator:
                         f"| Tag | `{d.get('tag_name')}` |",
                         f"| Version Bump | `{d.get('bump_type', 'patch').upper()}` "
                         f"({d.get('current_version')} → {d.get('suggested_version')}) |",
-                        f"| Published | {'✅ Yes' if d.get('release_published') else '⚠️ Failed'} |",
+                        f"| Published | {'Yes' if d.get('release_published') else 'Failed'} |",
                         f"| Target Commit | `{context.merge_commit_sha or 'HEAD'}` |",
                         "",
                     ]
@@ -453,7 +444,7 @@ class LifecycleOrchestrator:
                         "**Release Withheld — Blocking Conditions:**", ""
                     ]
                     for b in blockers:
-                        lines.append(f"- 🛑 {b}")
+                        lines.append(f"- {b}")
                     lines.append("")
 
             elif res.stage == LifecycleStage.MONITOR and res.details:
@@ -482,8 +473,8 @@ class LifecycleOrchestrator:
                     for a in alerts:
                         lines.append(
                             f"- `{a.get('alert_name')}` [{a.get('severity')}]  \n"
-                            f"  📐 *Trigger*: {a.get('condition')}  \n"
-                            f"  ⚡ *Action*: {a.get('action')}"
+                            f"  Trigger: {a.get('condition')}  \n"
+                            f"  Action: {a.get('action')}"
                         )
                     lines.append("")
 
@@ -491,7 +482,7 @@ class LifecycleOrchestrator:
                 d = res.details
                 lines += [
                     f"**Audit Trail ID**: `{d.get('audit_trail_id', context.run_id)}`  ",
-                    f"**All Compliant**: {'✅ Yes' if d.get('all_compliant') else '❌ No'}",
+                    f"**All Compliant**: {'Yes' if d.get('all_compliant') else 'No'}",
                     "",
                 ]
 
@@ -509,16 +500,15 @@ class LifecycleOrchestrator:
             lines += [
                 "---",
                 "",
-                "## 📜 Compliance Verification",
+                "## Compliance Verification",
                 "",
                 "| Framework | Control | Status | Evidence |",
                 "| :--- | :--- | :---: | :--- |",
             ]
             for note in gov_res.details["compliance_notes"]:
-                c_icon = "✅" if note["status"].lower() == "compliant" else "❌"
                 lines.append(
                     f"| **{note['framework']}** | `{note['control']}` "
-                    f"| {c_icon} {note['status']} | {note['evidence']} |"
+                    f"| {note['status']} | {note['evidence']} |"
                 )
             lines += [""]
 
@@ -526,22 +516,17 @@ class LifecycleOrchestrator:
         # FINAL RECOMMENDATION
         # ════════════════════════════════════════════════
         rec = self._generate_recommendation(context)
-        recommendation_icon = {
-            PipelineStatus.PASSED:  "🟢",
-            PipelineStatus.BLOCKED: "🔴",
-            PipelineStatus.PARTIAL: "🟡",
-        }[status]
 
         lines += [
             "---",
             "",
-            "## 🎯 Final Recommendation",
+            "## Final Recommendation",
             "",
-            f"{recommendation_icon} **{status.value}** — {rec}",
+            f"**[{status.value}]** — {rec}",
             "",
             "---",
             "",
-            f"*🤖 Generated autonomously by **Lifecycle Guardian** · "
+            f"*Generated autonomously by **Lifecycle Guardian** · "
             f"Run `{context.run_id}` · {completed_str} · "
             f"Total pipeline time: `{context.total_duration_seconds}s`*",
         ]

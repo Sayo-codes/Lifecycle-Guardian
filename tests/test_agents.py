@@ -273,7 +273,7 @@ async def test_governance_agent_executive_summary_and_compliance(clean_context):
     assert "OWASP Top 10" in frameworks
 
     assert "executive_report" in result.artifacts
-    assert "# 🛡️ Lifecycle Guardian - Executive DevSecOps Audit" in result.artifacts["executive_report"]
+    assert "# Lifecycle Guardian - Executive DevSecOps Audit" in result.artifacts["executive_report"]
 
 
 # --- 6. Orchestrator End-to-End Tests ---
@@ -337,29 +337,29 @@ async def test_orchestrator_final_report_structure(clean_context):
     assert report is not None
 
     # Header
-    assert "# 🛡️ Lifecycle Guardian" in report
+    assert "# Lifecycle Guardian" in report
 
     # Overall status banner
     assert "LIFECYCLE GUARDIAN" in report
 
     # Metadata section
-    assert "## 📋 Run Metadata" in report
+    assert "## Run Metadata" in report
 
     # Executive summary
-    assert "## 🧭 Executive Summary" in report
+    assert "## Executive Summary" in report
 
     # Scorecard section
-    assert "## 🚦 Pipeline Scorecard" in report
+    assert "## Pipeline Scorecard" in report
 
     # All stage names appear in the report
     for stage in ["Secure", "Verify", "Release", "Monitor", "Govern"]:
         assert stage in report, f"Stage '{stage}' missing from final report"
 
     # Stage-by-stage findings
-    assert "## 🔍 Stage-by-Stage Findings" in report
+    assert "## Stage-by-Stage Findings" in report
 
     # Final recommendation
-    assert "## 🎯 Final Recommendation" in report
+    assert "## Final Recommendation" in report
     assert final_context.final_recommendation in report
 
 

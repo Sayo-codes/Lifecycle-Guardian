@@ -1,10 +1,10 @@
-# 🛡️ Lifecycle Guardian
+# Lifecycle Guardian
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![GitLab Integration](https://img.shields.io/badge/GitLab-DevSecOps-fc6d26.svg?logo=gitlab)](https://gitlab.com)
-[![Tests](https://img.shields.io/badge/tests-15%20passing-brightgreen.svg)](#-testing)
+[![Tests](https://img.shields.io/badge/tests-15%20passing-brightgreen.svg)](#run-the-test-suite)
 
 ---
 
@@ -14,7 +14,7 @@ When a GitLab Merge Request is merged, Lifecycle Guardian wakes up and runs five
 
 ---
 
-## ⚡ Try It Now — No GitLab Account Needed
+## Try It Now — No GitLab Account Needed
 
 ```bash
 # 1. Clone
@@ -29,15 +29,15 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # 4. Run the demo
-python demo.py                # ✅ Clean merge — all gates pass, v1.3.0 released
-python demo.py --blocked      # 🛑 Critical CVE found — pipeline halted
+python demo.py                # Clean merge — all gates pass, v1.3.0 released
+python demo.py --blocked      # Critical CVE found — pipeline halted
 ```
 
 The demo runs the full five-stage pipeline with realistic data, prints a live progress view, and saves the complete Markdown report to **`report.md`**.
 
 ---
 
-## 💡 Why This Matters
+## Why This Matters
 
 The moment code lands in `main`, most teams lose coherent control:
 
@@ -53,17 +53,17 @@ Lifecycle Guardian replaces five disconnected manual processes with a single, ev
 
 ---
 
-## 🗺️ The Five DevSecOps Stages
+## The Five DevSecOps Stages
 
 Each stage is owned by a dedicated agent. Agents share state through a typed `LifecycleContext` object — upstream findings directly influence downstream decisions.
 
 | # | Stage | Agent | Responsibility | Gates pipeline? |
 |:-:|:------|:------|:--------------|:---------------:|
-| 1 | 🔒 **Secure** | `SecurityAgent` | Analyses SAST, DAST, Secret Scanning & Dependency findings. Calculates Risk Score (0–100) and issues a `pass`/`block` decision. Opens a GitLab issue on block. | ✅ Yes |
-| 2 | 🧪 **Verify** | `VerificationAgent` | Checks CI pipeline status, breaks down test suites (unit / integration / smoke), and validates coverage against the configured threshold. | ✅ Yes |
-| 3 | 🚀 **Release** | `ReleaseAgent` | Reads security + verification results before deciding. Infers SemVer bump from MR title prefix, generates changelog, tags and publishes the GitLab release. | — |
-| 4 | 📈 **Monitor** | `MonitoringAgent` | Recommends monitoring focus areas, emits PromQL metrics with SLO thresholds, and defines P1/P2 alert rules with automated rollback actions. | — |
-| 5 | 🏛️ **Govern** | `GovernanceAgent` | Synthesises an executive summary, compiles compliance notes (SOC 2, ISO 27001, OWASP Top 10), and posts the sealed audit report to the GitLab MR. **Always runs.** | — |
+| 1 | **Secure** | `SecurityAgent` | Analyses SAST, DAST, Secret Scanning & Dependency findings. Calculates Risk Score (0–100) and issues a `pass`/`block` decision. Opens a GitLab issue on block. | Yes |
+| 2 | **Verify** | `VerificationAgent` | Checks CI pipeline status, breaks down test suites (unit / integration / smoke), and validates coverage against the configured threshold. | Yes |
+| 3 | **Release** | `ReleaseAgent` | Reads security + verification results before deciding. Infers SemVer bump from MR title prefix, generates changelog, tags and publishes the GitLab release. | — |
+| 4 | **Monitor** | `MonitoringAgent` | Recommends monitoring focus areas, emits PromQL metrics with SLO thresholds, and defines P1/P2 alert rules with automated rollback actions. | — |
+| 5 | **Govern** | `GovernanceAgent` | Synthesises an executive summary, compiles compliance notes (SOC 2, ISO 27001, OWASP Top 10), and posts the sealed audit report to the GitLab MR. **Always runs.** | — |
 
 ### How agents share context
 
@@ -79,7 +79,7 @@ The `ReleaseAgent` reads `security_report.decision` and `verification_report.cov
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart TD
@@ -87,12 +87,12 @@ flowchart TD
     API -->|Background task| Orch[LifecycleOrchestrator]
 
     subgraph "Ordered Multi-Agent Pipeline"
-        Orch --> S1[🔒 SecurityAgent]
-        S1 -->|PASS + security_report| S2[🧪 VerificationAgent]
+        Orch --> S1[SecurityAgent]
+        S1 -->|PASS + security_report| S2[VerificationAgent]
         S1 -.->|BLOCK| Abort[Stages 2–4 SKIPPED]
-        S2 -->|PASS + verification_report| S3[🚀 ReleaseAgent]
-        S3 -->|release_info| S4[📈 MonitoringAgent]
-        S4 -->|monitoring_data| S5[🏛️ GovernanceAgent]
+        S2 -->|PASS + verification_report| S3[ReleaseAgent]
+        S3 -->|release_info| S4[MonitoringAgent]
+        S4 -->|monitoring_data| S5[GovernanceAgent]
         Abort -.-> S5
     end
 
@@ -103,12 +103,12 @@ flowchart TD
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 lifecycle-guardian/
 │
-├── demo.py                        # ⭐ One-command demo — start here
+├── demo.py                        # One-command demo — start here
 ├── requirements.txt               # All Python dependencies
 ├── .env.example                   # Environment variable reference
 ├── LICENSE                        # MIT License
@@ -139,7 +139,7 @@ lifecycle-guardian/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Requirements
 
@@ -188,7 +188,7 @@ python -m src.main
 
 ---
 
-## 🔗 API Reference
+## API Reference
 
 | Method | Endpoint | Description |
 |:-------|:---------|:------------|
@@ -219,7 +219,7 @@ curl http://localhost:8000/runs/lg-xxxxxxxx
 
 ---
 
-## 🔗 Connecting to GitLab
+## Connecting to GitLab
 
 ```bash
 cp .env.example .env
@@ -229,51 +229,51 @@ cp .env.example .env
 In your GitLab project: **Settings → Webhooks**
 - **URL**: `https://<your-host>/webhooks/gitlab`
 - **Secret token**: matches `GITLAB_WEBHOOK_SECRET`
-- **Trigger**: ✅ Merge request events
+- **Trigger**: Merge request events
 
 > `DRY_RUN=true` (the default) logs all GitLab API calls without making real changes. Safe to test against live projects.
 
 ---
 
-## 📄 Sample Report Output
+## Sample Report Output
 
 After `python demo.py`, open `report.md` to see the full report. Here is a preview:
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║   ✅  LIFECYCLE GUARDIAN — PIPELINE PASSED               ║
+║       LIFECYCLE GUARDIAN — PIPELINE PASSED               ║
 ╚══════════════════════════════════════════════════════════╝
 
-## 📋 Run Metadata
+## Run Metadata
 | Run ID          | `lg-demo-passed`                              |
 | Project         | `payments-service`                            |
 | Merge Request   | !142 — feat(checkout): Stripe SCA 3DS2 flow   |
-| Overall Status  | ✅ PASSED                                     |
+| Overall Status  | PASSED                                        |
 
-## 🧭 Executive Summary
+## Executive Summary
 > MR !142 by @sarah.chen passed all automated DevSecOps gates.
 > Risk Score 5/100. 298 tests passed (94.6% coverage).
 > Release v1.3.0 tagged and published on `main`.
 
-## 🚦 Pipeline Scorecard
-| ✅ | Secure  | SecurityAgent      | PASSED | 0.00s |
-| ✅ | Verify  | VerificationAgent  | PASSED | 0.00s |
-| ✅ | Release | ReleaseAgent       | PASSED | 0.00s |
-| ✅ | Monitor | MonitoringAgent    | PASSED | 0.00s |
-| ✅ | Govern  | GovernanceAgent    | PASSED | 0.00s |
+## Pipeline Scorecard
+| [PASSED] | Secure  | SecurityAgent      | PASSED | 0.00s |
+| [PASSED] | Verify  | VerificationAgent  | PASSED | 0.00s |
+| [PASSED] | Release | ReleaseAgent       | PASSED | 0.00s |
+| [PASSED] | Monitor | MonitoringAgent    | PASSED | 0.00s |
+| [PASSED] | Govern  | GovernanceAgent    | PASSED | 0.00s |
 
-## 📜 Compliance Verification
-| SOC 2 Type II | CC6.1 Logical Access | ✅ Compliant |
-| ISO/IEC 27001 | A.12.6 Vulnerability | ✅ Compliant |
-| OWASP Top 10  | A06:2021 Components  | ✅ Compliant |
+## Compliance Verification
+| SOC 2 Type II | CC6.1 Logical Access | Compliant |
+| ISO/IEC 27001 | A.12.6 Vulnerability | Compliant |
+| OWASP Top 10  | A06:2021 Components  | Compliant |
 
-## 🎯 Final Recommendation
-🟢 PASSED — All DevSecOps gates cleared. Release v1.3.0 is
+## Final Recommendation
+[PASSED] — All DevSecOps gates cleared. Release v1.3.0 is
 live on `main`. Monitor post-deploy SLOs for 30 minutes.
 ```
 
 ---
 
-## 📄 License
+## License
 
 [MIT](LICENSE) — free to use, modify, and distribute.

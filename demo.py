@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════════╗
-║              🛡️  LIFECYCLE GUARDIAN — DEMO MODE                  ║
+║                 LIFECYCLE GUARDIAN — DEMO MODE                   ║
 ║   Runs the full post-merge DevSecOps pipeline without GitLab.   ║
 ╚══════════════════════════════════════════════════════════════════╝
 
@@ -144,14 +144,14 @@ DEMO_CONTEXT_BLOCKED = LifecycleContext(
 def _print_header(scenario: str) -> None:
     print()
     print(_c("╔══════════════════════════════════════════════════════════════════╗", "cyan", "bold"))
-    print(_c("║", "cyan", "bold") + _c("              🛡️  LIFECYCLE GUARDIAN — DEMO MODE                  ", "white", "bold") + _c("║", "cyan", "bold"))
+    print(_c("║", "cyan", "bold") + _c("                 LIFECYCLE GUARDIAN — DEMO MODE                   ", "white", "bold") + _c("║", "cyan", "bold"))
     print(_c("║", "cyan", "bold") + _c(f"   Scenario: {scenario:<55}", "dim") + _c("║", "cyan", "bold"))
     print(_c("╚══════════════════════════════════════════════════════════════════╝", "cyan", "bold"))
     print()
 
 
 def _print_mr_info(context: LifecycleContext) -> None:
-    print(_c("  📌 Merge Request Details", "bold"))
+    print(_c("  Merge Request Details", "bold"))
     print(f"     Project  : {_c(context.project_name, 'cyan')}")
     print(f"     MR       : !{context.mr_iid} — {_c(context.mr_title, 'white')}")
     print(f"     Author   : @{context.author_username}")
@@ -173,16 +173,16 @@ def _print_stage_header(num: int, label: str, agent_name: str) -> None:
 def _print_stage_result(status: str, summary: str, duration: float) -> None:
     status_lower = status.lower()
     if status_lower == "passed":
-        icon, colour = "✅", "green"
+        colour = "green"
     elif status_lower == "warning":
-        icon, colour = "⚠️ ", "yellow"
+        colour = "yellow"
     elif status_lower in ("blocked", "failed"):
-        icon, colour = "🛑", "red"
+        colour = "red"
     else:
-        icon, colour = "⏭️ ", "dim"
+        colour = "dim"
 
     print(
-        f"       {icon} {_c(status.upper(), colour, 'bold')}  "
+        f"       {_c(status.upper(), colour, 'bold')}  "
         f"{_c(f'({duration:.2f}s)', 'dim')}"
     )
     summary_short = summary[:110] + "…" if len(summary) > 110 else summary
@@ -194,11 +194,11 @@ def _print_final_result(pipeline_status: str, recommendation: str) -> None:
     print(_c("─" * 68, "dim"))
     print()
     if pipeline_status == "PASSED":
-        print(_c("  ✅  PIPELINE PASSED", "green", "bold"))
+        print(_c("  PIPELINE PASSED", "green", "bold"))
     elif pipeline_status == "BLOCKED":
-        print(_c("  🛑  PIPELINE BLOCKED", "red", "bold"))
+        print(_c("  PIPELINE BLOCKED", "red", "bold"))
     else:
-        print(_c("  ⚠️   PIPELINE PARTIAL", "yellow", "bold"))
+        print(_c("  PIPELINE PARTIAL", "yellow", "bold"))
     print()
     words = recommendation.split()
     line, wrapped = "", []
@@ -220,11 +220,11 @@ def _print_final_result(pipeline_status: str, recommendation: str) -> None:
 # ──────────────────────────────────────────────────────────────────────────────
 
 STAGE_DISPLAY = {
-    "Secure":  (1, "🔒 Secure",  "SecurityAgent"),
-    "Verify":  (2, "🧪 Verify",  "VerificationAgent"),
-    "Release": (3, "🚀 Release", "ReleaseAgent"),
-    "Monitor": (4, "📈 Monitor", "MonitoringAgent"),
-    "Govern":  (5, "🏛️  Govern",  "GovernanceAgent"),
+    "Secure":  (1, "Secure",  "SecurityAgent"),
+    "Verify":  (2, "Verify",  "VerificationAgent"),
+    "Release": (3, "Release", "ReleaseAgent"),
+    "Monitor": (4, "Monitor", "MonitoringAgent"),
+    "Govern":  (5, "Govern",  "GovernanceAgent"),
 }
 
 
@@ -250,7 +250,7 @@ class DemoOrchestrator(LifecycleOrchestrator):
 
             if context.aborted and not stage_cfg.always_run:
                 print(
-                    f"       ⏭️  {_c('SKIPPED', 'dim', 'bold')}  "
+                    f"       {_c('SKIPPED', 'dim', 'bold')}  "
                     f"{_c('(pipeline blocked)', 'dim')}"
                 )
                 print()
@@ -272,7 +272,7 @@ class DemoOrchestrator(LifecycleOrchestrator):
             _print_stage_result(result.status.value, result.summary, result.execution_time_seconds)
 
             if stage_cfg.is_gate and result.is_blocking:
-                print(_c("  🚨 Gate triggered — halting downstream stages.", "red"))
+                print(_c("  Gate triggered — halting downstream stages.", "red"))
                 print()
 
         context.completed_at = datetime.now(timezone.utc)
@@ -288,7 +288,7 @@ class DemoOrchestrator(LifecycleOrchestrator):
 # ──────────────────────────────────────────────────────────────────────────────
 
 async def run_demo(blocked: bool = False) -> None:
-    scenario = "🛑 BLOCKED — Critical CVE detected" if blocked else "✅ PASSED — Clean merge"
+    scenario = "BLOCKED — Critical CVE detected" if blocked else "PASSED — Clean merge"
     context = DEMO_CONTEXT_BLOCKED if blocked else DEMO_CONTEXT_PASSED
 
     _print_header(scenario)
@@ -306,7 +306,7 @@ async def run_demo(blocked: bool = False) -> None:
     if final.final_report:
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(final.final_report)
-        print(_c(f"  📄 Full Markdown report saved → {_c(report_path, 'cyan', 'bold')}", "dim"))
+        print(_c(f"  Full Markdown report saved → {_c(report_path, 'cyan', 'bold')}", "dim"))
         print()
 
     print(

@@ -197,7 +197,7 @@ class SecurityAgent(BaseAgent):
     ) -> str:
         """Format GitLab issue body for security gate blocking."""
         lines = [
-            f"## 🚨 DevSecOps Security Gate Blocker",
+            f"## DevSecOps Security Gate Blocker",
             f"Merge Request !{context.mr_iid} (`{context.mr_title}`) triggered automated security gate failure.",
             "",
             f"- **Risk Score**: `{risk_score}/100` ({risk_level})",

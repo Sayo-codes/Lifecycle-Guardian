@@ -142,23 +142,23 @@ class GovernanceAgent(BaseAgent):
     ) -> str:
         """Render markdown executive report for GitLab."""
         lines = [
-            f"# 🛡️ Lifecycle Guardian - Executive DevSecOps Audit",
+            f"# Lifecycle Guardian - Executive DevSecOps Audit",
             f"> **Run ID**: `{context.run_id}` | **Target Branch**: `{context.target_branch}` | **MR**: !{context.mr_iid} | **Author**: @{context.author_username}",
             "",
-            "### 📌 Executive Summary",
+            "### Executive Summary",
             f"{executive_summary}",
             "",
-            "### 🚦 DevSecOps Stage Results",
+            "### DevSecOps Stage Results",
             "| Stage | Agent | Status | Key Highlights |",
             "| :--- | :--- | :--- | :--- |",
         ]
 
         icons = {
-            AgentStatus.PASSED: "✅ Passed",
-            AgentStatus.WARNING: "⚠️ Warning",
-            AgentStatus.BLOCKED: "🛑 Blocked",
-            AgentStatus.FAILED: "❌ Failed",
-            AgentStatus.SKIPPED: "⏭️ Skipped",
+            AgentStatus.PASSED: "Passed",
+            AgentStatus.WARNING: "Warning",
+            AgentStatus.BLOCKED: "Blocked",
+            AgentStatus.FAILED: "Failed",
+            AgentStatus.SKIPPED: "Skipped",
         }
 
         for res in context.results:
@@ -166,26 +166,25 @@ class GovernanceAgent(BaseAgent):
             lines.append(f"| **{res.stage.value}** | `{res.agent_name}` | {icon} | {res.summary} |")
 
         # Include this Governance stage
-        lines.append(f"| **Govern** | `GovernanceAgent` | ✅ Passed | Compliance verified & audit log sealed |")
+        lines.append(f"| **Govern** | `GovernanceAgent` | Passed | Compliance verified & audit log sealed |")
 
         lines.extend([
             "",
-            "### 📋 Regulatory Compliance Notes",
+            "### Regulatory Compliance Notes",
             "| Standard / Framework | Control | Status | Evidence / Verification |",
             "| :--- | :--- | :--- | :--- |",
         ])
 
         for note in compliance_notes:
-            status_icon = "✅" if note["status"].lower() == "compliant" else "❌"
             lines.append(
-                f"| {note['framework']} | `{note['control']}` | {status_icon} {note['status']} | {note['evidence']} |"
+                f"| {note['framework']} | `{note['control']}` | {note['status']} | {note['evidence']} |"
             )
 
         rel = context.release_info or {}
         if rel.get("safe_to_release"):
             lines.extend([
                 "",
-                "### 📦 Release Metadata",
+                "### Release Metadata",
                 f"- **Released Tag**: `{rel.get('tag_name')}` ({rel.get('bump_type')} bump)",
                 f"- **Commit SHA**: `{context.merge_commit_sha or 'HEAD'}`",
                 f"- **Rollback Runbook**: Armed automatically if P1 alerts fire.",

@@ -58,10 +58,10 @@ async def main() -> None:
                 await func(**kwargs)
             else:
                 func(**kwargs)
-            print(f"  ✅ {name}")
+            print(f"  [PASS] {name}")
             passed += 1
         except Exception as exc:
-            print(f"  ❌ {name}: {type(exc).__name__} — {exc}")
+            print(f"  [FAIL] {name}: {type(exc).__name__} — {exc}")
             failed += 1
 
     print("=" * 50)
